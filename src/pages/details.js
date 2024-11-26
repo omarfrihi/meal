@@ -8,7 +8,11 @@ const Details = () => {
   const detail = data?.data?.meals?.[0];
   if (isFetching) return <>Loading...</>;
   if (isError) return <>Error...</>;
+  const regex =
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = `${detail?.strYoutube}`.match(regex);
 
+  const embedUrl = match ? `https://www.youtube.com/embed/${match[1]}` : "";
   return (
     <div className="details-container">
       <div className="flex-row">
@@ -38,16 +42,18 @@ const Details = () => {
         </div>
       </div>
 
-      <div className="video-container">
-        <iframe
-          width="560"
-          height="315"
-          src={detail?.strYoutube}
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
+      {embedUrl && (
+        <div className="video-container">
+          <iframe
+            width="560"
+            height="315"
+            src={embedUrl}
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      )}
     </div>
   );
 };
